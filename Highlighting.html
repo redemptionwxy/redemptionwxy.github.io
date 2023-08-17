@@ -141,15 +141,15 @@
             document.querySelector('.editing-tools').style.display = 'none'; // hide the editing tools
         });
 
-        highlightedContent.addEventListener('mouseup', function() {
+        function handleHighlight() {
             const selection = window.getSelection();
             
             if (!selection.rangeCount) return false;
-            
+        
             const range = selection.getRangeAt(0);
-
+        
             if (range.toString().trim() === "") return;
-
+        
             if (isRangeHighlighted(range)) {
                 // Deselect functionality
                 removeHighlight(range);
@@ -160,7 +160,10 @@
                 range.surroundContents(span);
             }
             selection.removeAllRanges();
-        });
+        }
+        
+        highlightedContent.addEventListener('mouseup', handleHighlight);
+        highlightedContent.addEventListener('touchend', handleHighlight);
 
         function isRangeHighlighted(range) {
             let currentNode = range.startContainer;
