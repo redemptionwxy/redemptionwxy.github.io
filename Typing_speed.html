@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wang's Typing Test</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Additional Styles */
+        #word-list {
+            font-size: 33px; /* Increased font size */
+            margin-bottom: 20px;
+        }
+        .correct {
+            color: green;
+        }
+
+        .incorrect {
+            color: red;
+        }
+
+        #user-input {
+            max-width: 400px; /* Reduced input box width */
+            margin: 0 auto;  /* Center the input box */ 
+        }
+        .custom-file-upload {
+            margin-left: 10px;
+            margin-top: 15px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            padding: 6px 16px;
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .custom-file-upload:hover {
+            background-color: #e0e0e0;
+        }
+        .my-4 {
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            margin-right: 50px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        #word-list-upload {
+            display: none;
+        }
+
+        #delete-file-button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="Home.html">Wang's Typing Test</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Highlighting.html">Highlighting</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="Typing_speed.html">Typing Speed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Home.html">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- End Navbar -->
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1>Wang's Typing Speed Test</h1>
+            <div class="mb-3 d-flex justify-content-center align-items-center">
+                <label for="word-list-upload" class="form-label d-block">Upload your word list (.txt)</label>
+                <label class="custom-file-upload">
+                    Click to Upload
+                    <input type="file" class="form-control-file" id="word-list-upload" accept=".txt">
+                </label>
+                <span id="file-name-display" class="ml-2"></span>
+                <button class="btn btn-danger mt-2 d-inline-block" id="delete-file-button">Delete</button>
+            </div>
+            <div id="timer" class="my-3 display-4">60</div>
+            <div class="progress mb-3" style="height: 20px;">
+                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+            <div id="word-list"></div>
+            <input type="text" class="form-control mt-3" id="user-input" placeholder="Start typing...">
+            <button class="btn btn-primary mt-3" id="restart-button">Restart</button>
+            <div id="results" class="mt-3"></div>
+            <div class="my-4">
+                <h2>How to use:</h2>
+                <ol class="text-left">
+                    <li>You can upload your word list in txt file. If not uploaded, the default list will be used.</li>
+                    <li>Time will count down when user start to type the words.</li>
+                    <li>Enter "SPACE" for entering the next word</li>
+                    <li>Your speed and accuracy will be shown once the timer runs out.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const defaultWords = ["朋友", "吃饭", "结婚", "霸王龙", "中文", "应该", "健康", "二月", "快乐", "不能", "电池", "象棋", "今天", "太阳", "城市", "出租车", "地铁", "跑步", "晚饭", "数字", "服装", "偶尔", "经常"];
+    let words = [...defaultWords];
+    let remainingWords = [...words];
+    let currentWords = [];
+    const wordListElement = document.getElementById("word-list");
+    const userInput = document.getElementById("user-input");
+    const progressBar = document.querySelector(".progress-bar");
+    const timerElement = document.getElementById("timer");
+    const resultsElement = document.getElementById("results");
+
+    let typedWords = 0;
+    let correctWords = 0;
+    let started = false;
+
+    document.getElementById("word-list-upload").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            document.getElementById("file-name-display").textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const uploadedWords = content.split("\n").filter(word => word.trim() !== "").map(word => word.trim());
+                if (uploadedWords.length > 0) {
+                    words = [...uploadedWords]; // Directly set the new words
+                    remainingWords = [...words];  // Reset the remainingWords with the uploaded words
+                    populateWords();
+                    resetTest();
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    document.getElementById("delete-file-button").addEventListener("click", function() {
+        words = [...defaultWords];
+        remainingWords = [...defaultWords];
+        populateWords();
+        resetTest();
+        document.getElementById("word-list-upload").value = ""; // Clear the file input
+        document.getElementById("file-name-display").textContent = "";
+    });
+
+    function populateWords() {
+        if (remainingWords.length < 10) {
+            remainingWords = [...remainingWords, ...words];
+        }
+
+        currentWords = remainingWords.sort(() => 0.5 - Math.random()).slice(0, 10);
+        remainingWords = remainingWords.filter(word => !currentWords.includes(word));
+        wordListElement.innerHTML = currentWords.map(word => `<span>${word}</span>`).join('     ');
+    }
+
+    populateWords();
+
+    let countdown = 60;
+    let interval;
+
+    function startTest() {
+        if (!started) {
+            started = true;
+            interval = setInterval(() => {
+                countdown--;
+                timerElement.textContent = countdown;
+                progressBar.style.width = (countdown / 60) * 100 + "%";
+
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    userInput.disabled = true;
+
+                    const wpm = typedWords;
+                    const accuracy = Math.floor((correctWords / typedWords) * 100);
+
+                    resultsElement.innerHTML = `Words per minute: ${wpm} <br> Accuracy: ${accuracy}%`;
+                }
+            }, 1000);
+        }
+    }
+
+    userInput.addEventListener("input", (event) => {
+        startTest();
+
+        const currentWordElement = wordListElement.querySelectorAll("span")[typedWords % 10];
+        if (event.data === " " && userInput.value.trim() !== "") {
+            if (userInput.value.trim() === currentWords[typedWords % 10]) {
+                correctWords++;
+                currentWordElement.classList.add("correct");
+            } else {
+                currentWordElement.classList.add("incorrect");
+            }
+            typedWords++;
+            userInput.value = "";
+
+            if (typedWords % 10 === 0) {
+                populateWords();
+            }
+        }
+    });
+
+    function resetTest() {
+        clearInterval(interval);
+        countdown = 60;
+        typedWords = 0;
+        correctWords = 0;
+        started = false;
+        timerElement.textContent = countdown;
+        progressBar.style.width = (countdown / 60) * 100 + "%";
+        resultsElement.innerHTML = "";
+        userInput.value = "";
+        userInput.disabled = false;
+    }
+
+    document.getElementById("restart-button").addEventListener("click", function() {
+        resetTest();
+        populateWords();
+    });
+</script>
+
+<!-- Include Bootstrap JS and Popper.js for Bootstrap's JavaScript plugins -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

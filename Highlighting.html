@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wang's Word List</title>
+    
+    <!-- Including Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        #highlightedContent {
+            white-space: pre-wrap; /* Ensure the line breaks are respected */
+            display: none;
+            padding: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        .highlighted {
+            background-color: yellow;
+        }
+
+        .editing-tools {
+            display: none;
+        }
+        .navbar-brand {
+            margin-right: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="Home.html">Wang's Highlighting</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="Highlighting.html">Highlighting</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Typing_speed.html">Typing Speed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Home.html">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- End Navbar -->
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="text-center mb-4">Highlight Your Paragraph to a Wordlist</h2>
+                <div class="bg-light p-4 rounded border">
+                    <h4>How to Use:</h4>
+                    <ol>
+                        <li>Paste your text into the provided textbox.</li>
+                        <li>Click "Confirm & Highlight" to proceed.</li>
+                        <li>Highlight the sections of your text that you wish to add to the word list.</li>
+                        <li>Click "Finish & Download" to download your word list.</li>
+                    </ol>
+                </div>
+                <textarea id="textInput" class="form-control" rows="11" placeholder="Paste Your Paragraph Here..." maxlength="5000"></textarea>
+               <div class="text-right mt-3">
+                    <button id="confirmBtn" class="btn btn-primary">Confirm & Highlight</button>
+                </div>
+                                
+                <div id="highlightedContent"></div>
+                
+                <!-- Editing tools only visible in the editing page -->
+                <div class="editing-tools mt-3">
+                    <label for="existingFile">Save to Existing Word List:</label>
+                    <input type="file" id="existingFile" accept=".txt">
+                    <button id="removeFileBtn" class="btn btn-danger btn-sm ml-2">Delete</button>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" value="" id="autoRemoveSymbols">
+                        <label class="form-check-label" for="autoRemoveSymbols">
+                            Auto-remove Space and Enter
+                        </label>
+                    </div>
+                    <button id="returnBtn" class="btn btn-secondary mt-3">Return</button>
+                    <button id="downloadBtn" class="btn btn-success mt-3">Finish & Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const highlightedContent = document.getElementById('highlightedContent');
+        const returnBtn = document.getElementById('returnBtn');
+        const autoRemoveSymbolsCheckbox = document.getElementById('autoRemoveSymbols');
+        const existingFileInput = document.getElementById('existingFile');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+
+        let existingFileContent = "";
+
+        existingFileInput.addEventListener('change', async function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    existingFileContent = e.target.result;
+                }
+                reader.readAsText(this.files[0]);
+            }
+        });
+
+        removeFileBtn.addEventListener('click', function() {
+            existingFileInput.value = ""; // reset the file input
+            existingFileContent = ""; // clear the file content
+        });
+
+        confirmBtn.addEventListener('click', function() {
+            if (textInput.value.trim() === "") {
+                alert("Please enter some text before confirming.");
+                return;
+            }
+            highlightedContent.textContent = textInput.value;
+            highlightedContent.style.display = 'block';
+            textInput.style.display = 'none';
+            confirmBtn.style.display = 'none';
+            document.querySelector('.editing-tools').style.display = 'block';
+        });
+
+        returnBtn.addEventListener('click', function() {
+            textInput.style.display = 'block';
+            highlightedContent.style.display = 'none';
+            confirmBtn.style.display = 'block';
+            document.querySelector('.editing-tools').style.display = 'none'; // hide the editing tools
+        });
+
+        highlightedContent.addEventListener('mouseup', function() {
+            const selection = window.getSelection();
+            
+            if (!selection.rangeCount) return false;
+            
+            const range = selection.getRangeAt(0);
+
+            if (range.toString().trim() === "") return;
+
+            if (isRangeHighlighted(range)) {
+                // Deselect functionality
+                removeHighlight(range);
+            } else {
+                // Highlight functionality
+                const span = document.createElement('span');
+                span.className = 'highlighted';
+                range.surroundContents(span);
+            }
+            selection.removeAllRanges();
+        });
+
+        function isRangeHighlighted(range) {
+            let currentNode = range.startContainer;
+            while (currentNode && currentNode !== range.endContainer) {
+                if (currentNode.parentElement && currentNode.parentElement.classList.contains('highlighted')) {
+                    return true;
+                }
+                currentNode = nextNode(currentNode);
+            }
+            if (range.endContainer.parentElement && range.endContainer.parentElement.classList.contains('highlighted')) {
+                return true;
+            }
+            return false;
+        }
+
+        function removeHighlight(range) {
+            const nodesToRemoveHighlight = [];
+            let currentNode = range.startContainer;
+            while (currentNode && currentNode !== range.endContainer) {
+                if (currentNode.nodeType === Node.ELEMENT_NODE && currentNode.classList.contains('highlighted')) {
+                    nodesToRemoveHighlight.push(currentNode);
+                }
+                currentNode = nextNode(currentNode);
+            }
+            if (range.endContainer.nodeType === Node.ELEMENT_NODE && range.endContainer.classList.contains('highlighted')) {
+                nodesToRemoveHighlight.push(range.endContainer);
+            }
+
+            nodesToRemoveHighlight.forEach(node => {
+                let parent = node.parentNode;
+                while (node.firstChild) {
+                    parent.insertBefore(node.firstChild, node);
+                }
+                parent.removeChild(node);
+            });
+        }
+        function nextNode(node) {
+            if (node.firstChild) {
+                return node.firstChild;
+            }
+            while (node) {
+                if (node.nextSibling) {
+                    return node.nextSibling;
+                }
+                node = node.parentNode;
+            }
+        }
+
+        downloadBtn.addEventListener('click', function() {
+            const highlightedElements = highlightedContent.querySelectorAll('.highlighted');
+            let words = [];
+            highlightedElements.forEach(element => {
+                let content = element.textContent;
+                if (autoRemoveSymbolsCheckbox.checked) {
+                    content = content.replace(/\s+/g, "").replace(/\s+/g, " ");
+                    if (content.trim() === '') {
+                        element.remove();
+                        return;
+                    }
+                }
+                words.push(content);
+            });
+
+            // Appending the highlighted content to the existing file content
+            const combinedContent = existingFileContent + "\n" + words.join('\n');
+            const blob = new Blob([combinedContent], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'WordList.txt';
+            a.click();
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
