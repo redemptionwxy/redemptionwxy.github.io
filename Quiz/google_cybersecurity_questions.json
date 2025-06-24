@@ -1,5 +1,5 @@
 [
-  {
+  { 
     "module": "Module 1: Welcome to The Exciting World of Cybersecurity",
     "url": "https://quiztudy.com/coursera-google-courses/google-cybersecurity/welcome-to-the-exciting-world-of-cybersecurity-course-1-module-1/",
     "questions": [
@@ -425,7 +425,7 @@
         "explanation": "Correct!"
       }
     ],
-    "course": 1,
+    "course": "Course 1 – Foundations of Cybersecurity",
     "mod_no": 1
   },
   {
@@ -901,7 +901,7 @@
         "explanation": "Correct!"
       }
     ],
-    "course": 1,
+    "course": "Course 1 – Foundations of Cybersecurity",
     "mod_no": 2
   },
   {
@@ -1371,7 +1371,7 @@
         "explanation": "Correct!"
       }
     ],
-    "course": 1,
+    "course": "Course 1 – Foundations of Cybersecurity",
     "mod_no": 3
   },
   {
@@ -1795,7 +1795,7 @@
         "explanation": "Correct!"
       }
     ],
-    "course": 1,
+    "course": "Course 1 – Foundations of Cybersecurity",
     "mod_no": 4
   },
   {
@@ -2218,7 +2218,7 @@
         "explanation": "Correct!"
       }
     ],
-    "course": 2,
+    "course": "Course 2 – Play It Safe: Manage Security Risks",
     "mod_no": 1
   },
   {
@@ -2831,7 +2831,7 @@
         "explanation": "Correct"
       }
     ],
-    "course": 2,
+    "course": "Course 2 – Play It Safe: Manage Security Risks",
     "mod_no": 2
   },
   {
@@ -3240,7 +3240,7 @@
         "explanation": "Correct"
       }
     ],
-    "course": 2,
+    "course": "Course 2 – Play It Safe: Manage Security Risks",
     "mod_no": 3
   },
   {
@@ -3624,7 +3624,7 @@
         "explanation": "Correct"
       }
     ],
-    "course": 2,
+    "course": "Course 2 – Play It Safe: Manage Security Risks",
     "mod_no": 4
   },
   {
@@ -4201,7 +4201,7 @@
         "explanation": "Correct"
       }
     ],
-    "course": 3,
+    "course": "Course 3 – Connect and Protect: Networks and Network Security",
     "mod_no": 1
   },
   {
@@ -5234,7 +5234,7 @@
         "explanation": "Previous Module Next Module"
       }
     ],
-    "course": 3,
+    "course": "Course 3 – Connect and Protect: Networks and Network Security",
     "mod_no": 3
   },
   {
@@ -5780,7 +5780,7 @@
         "explanation": "Previous Module Next Course"
       }
     ],
-    "course": 3,
+    "course": "Course 3 – Connect and Protect: Networks and Network Security",
     "mod_no": 4
   },
   {
@@ -6329,7 +6329,7 @@
         "explanation": "In conclusion, this comprehensive exploration of operating systems has provided participants with a profound understanding of the intricate interplay between hardware, software, and operating systems. The meticulously designed course has successfully demystified the fundamental roles and functionalities of operating systems, empowering learners to navigate the complexities inherent in the interaction between hardware and software components. Through recognition and exploration of prevalent operating systems in today’s technological landscape, participants have gained practical insights into the features and applications that shape contemporary computing environments. The module further illuminated the diverse interfaces facilitating user-OS interaction, offering in-depth insights into both graphical user interfaces (GUI) and command-line interfaces (CLI). Learners now possess the knowledge and skills to proficiently navigate, control, and optimize operating systems through these interfaces. By incorporating real-world examples and practical demonstrations, the course not only ensured a solid grasp of theoretical concepts but also equipped participants with tangible skills crucial for effectively leveraging operating systems. In essence, this comprehensive overview stands as an indispensable resource for individuals seeking a robust understanding of operating systems and their pivotal role in shaping the landscape of modern computing. Participants are now well-prepared to apply their newfound knowledge and skills in real-world scenarios, enhancing their ability to navigate and harness the power of operating systems in diverse technological contexts."
       }
     ],
-    "course": 4,
+    "course": "Course 4 – Tools of the Trade: Linux and SQL",
     "mod_no": 1
   },
   {
@@ -6949,7 +6949,7 @@
         "explanation": "In conclusion, this comprehensive exploration of the Linux operating system equips participants with a deep understanding of its pivotal role in the realm of cybersecurity. The module meticulously guides learners through fundamental Linux concepts, offering insights into its architecture and providing an overview of widely used Linux distributions. This foundational knowledge establishes a robust base for comprehending the diverse applications of Linux in various cybersecurity scenarios. A significant emphasis is placed on the exploration of the Linux shell, a dynamic interface enabling direct communication with the operating system. Participants gain hands-on experience navigating the command-line interface, honing their skills for efficient and precise interactions with the Linux operating system. As this module concludes, learners not only acquire proficiency in Linux architecture and distributions but also emerge adept at utilizing the Linux shell as a powerful tool in the cybersecurity toolkit. This comprehensive overview ensures that participants not only grasp theoretical knowledge but also cultivate practical skills, laying the groundwork for their successful integration of Linux in diverse cybersecurity contexts."
       }
     ],
-    "course": 4,
+    "course": "Course 4 – Tools of the Trade: Linux and SQL",
     "mod_no": 2
   },
   {
@@ -7672,7 +7672,7 @@
         "explanation": "In summary, this module provides a comprehensive exploration of Linux commands executed through the Bash shell, offering participants practical insights into their application within the Linux operating system. Through hands-on experiences, learners acquire proficiency in navigating and managing the file system, as well as authorizing and authenticating users. The module also emphasizes the significance of seeking help when working with new Linux commands, ensuring participants have the resources and strategies needed for continuous learning. By fostering a practical understanding of command-line operations in Linux, this module equips participants with essential skills for real-world applications. The hands-on approach enhances their confidence in using the Bash shell, contributing to their overall proficiency in Linux environments. As participants progress through this comprehensive overview, they not only gain theoretical knowledge but also develop practical expertise, setting a solid foundation for leveraging Linux commands effectively in cybersecurity and related fields."
       }
     ],
-    "course": 4,
+    "course": "Course 4 – Tools of the Trade: Linux and SQL",
     "mod_no": 3
   },
   {
@@ -8495,7 +8495,7 @@
         "explanation": "Liking our content? Then, don’t forget to ad us to your BOOKMARKS so you can find us easily!"
       }
     ],
-    "course": 4,
+    "course": "Course 4 – Tools of the Trade: Linux and SQL",
     "mod_no": 4
   },
   {
@@ -9123,7 +9123,7 @@
         "explanation": "This comprehensive exploration has provided participants with a holistic understanding of asset management in the cybersecurity domain. From strategically identifying and prioritizing assets to addressing the unique challenges associated with securing physical and digital resources, participants have gained invaluable insights into the critical aspects of asset protection. The introduction to the National Institute of Standards and Technology (NIST) framework has further equipped participants with industry-standard guidelines and best practices, offering a systematic approach to managing cybersecurity risk. As participants move forward in their cybersecurity education, this module serves as a foundational knowledge base, empowering them to navigate the intricate landscape of asset protection with confidence. By integrating theoretical concepts with practical applications, this overview ensures that participants are well-prepared to contribute to effective risk management strategies and play integral roles in safeguarding organizational assets."
       }
     ],
-    "course": 5,
+    "course": "Course 5 – Assets, Threats, and Vulnerabilities",
     "mod_no": 1
   },
   {
@@ -9735,7 +9735,7 @@
         "explanation": "In conclusion, this module serves as a comprehensive exploration of the multifaceted realm of asset security, encompassing various aspects crucial to protecting organizational resources. Participants have delved into the intricate landscape of security controls, understanding how these measures are instrumental in safeguarding both physical and digital assets. The exploration extends to the nuanced relationship between privacy and asset security, emphasizing the role of encryption in preserving the confidentiality of digital resources. Moreover, participants have gained valuable insights into authentication and authorization systems, unraveling the mechanisms that verify user identities and contribute to a robust security framework. This module not only equips participants with theoretical knowledge but also provides practical applications, ensuring they develop a well-rounded skill set essential for implementing effective asset security measures in real-world organizational scenarios. As participants conclude this module, they emerge with a heightened understanding of asset security’s complexities and the tools required to navigate this critical aspect of cybersecurity."
       }
     ],
-    "course": 5,
+    "course": "Course 5 – Assets, Threats, and Vulnerabilities",
     "mod_no": 2
   },
   {
@@ -10503,7 +10503,7 @@
         "explanation": "The participants of this module have embarked on a comprehensive exploration of the vulnerability management process, delving into the intricate realm of identifying, assessing, and mitigating vulnerabilities to fortify organizational cybersecurity. By examining common vulnerabilities and cultivating an attacker mindset, learners have gained invaluable insights into the dynamic landscape of cybersecurity threats. Practical exercises and case studies have provided a hands-on dimension to the theoretical knowledge, enabling participants to apply their understanding to real-world scenarios. As a result of this immersive journey, participants are now well-versed in the nuanced strategies employed in vulnerability management, equipped with the analytical skills necessary to safeguard organizational assets. This module serves as a pivotal resource in the broader context of cybersecurity education, offering a robust foundation for individuals aspiring to navigate and excel in the multifaceted field of vulnerability management."
       }
     ],
-    "course": 5,
+    "course": "Course 5 – Assets, Threats, and Vulnerabilities",
     "mod_no": 3
   },
   {
@@ -11319,7 +11319,7 @@
         "explanation": "This comprehensive exploration of digital asset security equips participants with a robust foundation in understanding and mitigating threats to digital assets. Through an in-depth examination of common threat types, cybercriminal tools and techniques, and proactive measures like threat modeling, participants are well-prepared to navigate the dynamic cybersecurity landscape. The emphasis on practical insights and strategies employed by security professionals ensures that learners not only grasp theoretical concepts but also develop the practical skills needed to protect digital assets effectively. As participants conclude this course, they emerge with a heightened awareness of cybersecurity challenges and the tools necessary to contribute to the ongoing efforts to secure digital landscapes."
       }
     ],
-    "course": 5,
+    "course": "Course 5 – Assets, Threats, and Vulnerabilities",
     "mod_no": 4
   },
   {
@@ -11948,7 +11948,7 @@
         "explanation": "In conclusion, this comprehensive course series offers a thorough and practical journey into the multifaceted domain of cybersecurity. Covering essential aspects such as threat detection, incident response, and the intricacies of securing digital assets, participants gain invaluable skills and knowledge to navigate the complex landscape of cybersecurity. Whether delving into the realms of network security, operating systems, or employing advanced data analytics, the courses provide a holistic understanding of cybersecurity principles and practices. As participants explore tools, frameworks, and real-world scenarios, they are not only equipped with theoretical insights but also practical expertise crucial for addressing the ever-evolving challenges in the cybersecurity landscape. This series stands as a cornerstone for those aspiring to excel in the field, fostering a robust foundation for a successful career in the dynamic and critical realm of cybersecurity."
       }
     ],
-    "course": 6,
+    "course": "Course 6 – Sound the Alarm: Detection and Response",
     "mod_no": 1
   },
   {
@@ -12484,7 +12484,7 @@
         "explanation": "The module offers a thorough and immersive exploration of various facets within the cybersecurity domain. Participants embark on a journey that covers fundamental principles, advanced practices, and real-world applications, ensuring a comprehensive understanding of incident detection and response. The multifaceted curriculum not only imparts theoretical knowledge but also provides hands-on experiences, allowing participants to hone practical skills crucial in the ever-evolving field of cybersecurity. Through detailed examinations of incident detection methodologies, investigation procedures, and analytical techniques, participants are equipped with the tools needed to navigate and respond effectively to security incidents. The emphasis on artifact analysis, documentation, and evidence collection enhances their forensic capabilities, fostering a well-rounded skill set. This program stands as a testament to the commitment to excellence in cybersecurity education, preparing participants to meet the challenges of the industry with confidence and proficiency. Overall, the program serves as a cornerstone for those aspiring to make meaningful contributions in the vital areas of incident detection and response."
       }
     ],
-    "course": 6,
+    "course": "Course 6 – Sound the Alarm: Detection and Response",
     "mod_no": 3
   },
   {
@@ -13251,7 +13251,7 @@
         "explanation": "In conclusion, the comprehensive exploration of logs, Intrusion Detection Systems (IDS), and Security Information Event Management (SIEM) systems in this course equips participants with a profound understanding of the intricate world of cybersecurity. By unraveling the significance of logs as digital footprints and delving into the mechanisms of IDS and SIEM, participants gain a holistic perspective on threat detection and incident response. The hands-on introduction to prominent IDS and SIEM products ensures practical insights, empowering learners to navigate these essential tools in real-world cybersecurity scenarios. Moreover, the practical application of creating basic IDS rules not only solidifies theoretical knowledge but also cultivates the skills necessary for active participation in cybersecurity practices. This module serves as a pivotal resource for those seeking to fortify their expertise in log analysis, incident detection, and response, contributing to the broader landscape of cybersecurity with both theoretical acumen and practical proficiency. Armed with this knowledge, participants are well-prepared to navigate the dynamic and ever-evolving challenges of digital security."
       }
     ],
-    "course": 6,
+    "course": "Course 6 – Sound the Alarm: Detection and Response",
     "mod_no": 4
   },
   {
@@ -13890,7 +13890,7 @@
         "explanation": "Liking our content? Then, don’t forget to ad us to your BOOKMARKS so you can find us easily!"
       }
     ],
-    "course": 7,
+    "course": "Course 7 – Automate Cybersecurity Tasks with Python",
     "mod_no": 1
   },
   {
@@ -14434,7 +14434,7 @@
         "explanation": "In conclusion, this advanced Python programming course equips participants with a robust set of skills essential for navigating intricate cybersecurity challenges. By delving into advanced Python concepts such as pre-built and user-defined functions, module utilization, and code readability, learners have fortified their programming capabilities. The emphasis on writing clear and comprehensible code not only enhances individual proficiency but also fosters collaborative development practices crucial in real-world cybersecurity scenarios. As participants conclude this course, they stand well-prepared to apply their refined Python skills to address complex issues, contributing effectively to cybersecurity initiatives and projects."
       }
     ],
-    "course": 7,
+    "course": "Course 7 – Automate Cybersecurity Tasks with Python",
     "mod_no": 2
   },
   {
@@ -15086,7 +15086,7 @@
         "explanation": "In conclusion, this module serves as a pivotal step in the participants’ Python programming journey, elevating their proficiency in manipulating strings and lists. The exploration of advanced methods for these data types and the practical application of algorithmic concepts contribute to a well-rounded skill set. The incorporation of regular expressions enhances participants’ capabilities in pattern recognition within strings, fostering a deeper understanding of data analysis and manipulation. As participants navigate through this comprehensive learning experience, they not only sharpen their Python skills but also cultivate a problem-solving mindset essential for real-world applications."
       }
     ],
-    "course": 7,
+    "course": "Course 7 – Automate Cybersecurity Tasks with Python",
     "mod_no": 3
   },
   {
@@ -15743,7 +15743,7 @@
         "explanation": "In conclusion, this module has provided participants with a practical and hands-on exploration of Python’s application in the field of cybersecurity. By focusing on tasks related to file handling and automation, participants have not only honed their Python programming skills but also gained valuable insights into streamlining and optimizing cybersecurity processes. The emphasis on debugging strategies ensures that participants are well-equipped to troubleshoot and refine their code, fostering a robust foundation for scripting tasks in real-world cybersecurity scenarios. Overall, this comprehensive module serves as a pivotal resource for individuals seeking to bridge the gap between theoretical knowledge and practical application in the dynamic landscape of cybersecurity automation with Python."
       }
     ],
-    "course": 7,
+    "course": "Course 7 – Automate Cybersecurity Tasks with Python",
     "mod_no": 4
   },
   {
@@ -16220,7 +16220,7 @@
         "explanation": "In conclusion, this comprehensive overview has provided valuable insights into various aspects of the cybersecurity domain. From foundational knowledge about operating systems and network security to advanced topics such as incident response and machine learning, participants have gained a well-rounded understanding of the multifaceted field of cybersecurity. The diverse range of courses covered in this program equips learners with essential skills, from using Linux and Python in cybersecurity tasks to mastering incident detection and response techniques. By delving into the intricacies of threat modeling, network analysis, and the utilization of cybersecurity tools, participants are well-prepared to navigate the challenges of the cybersecurity landscape. The emphasis on hands-on experience, practical demonstrations, and real-world applications ensures that learners not only grasp theoretical concepts but also develop the practical skills necessary for success in cybersecurity roles. Overall, this program serves as a comprehensive and indispensable resource for those looking to embark on or advance in a cybersecurity career, offering a robust foundation and practical insights into the dynamic and ever-evolving field of cybersecurity."
       }
     ],
-    "course": 8,
+    "course": "Course 8 – Put It to Work: Prepare for Cybersecurity Jobs",
     "mod_no": 1
   },
   {
@@ -16672,7 +16672,7 @@
         "explanation": "In conclusion, this module serves as a vital exploration into incident prioritization and escalation, providing participants with a deep understanding of their pivotal roles in cybersecurity. Armed with this knowledge, learners are equipped to navigate the dynamic challenges of incident management. The insights gained into decision-making processes, severity assessment, and escalation procedures contribute to the development of well-rounded cybersecurity professionals. As participants conclude this segment, they emerge with the expertise necessary to uphold the security posture of organizations and effectively respond to diverse cybersecurity incidents, ensuring the continued resilience of business operations."
       }
     ],
-    "course": 8,
+    "course": "Course 8 – Put It to Work: Prepare for Cybersecurity Jobs",
     "mod_no": 2
   },
   {
@@ -17162,7 +17162,7 @@
         "explanation": "In conclusion, this comprehensive journey through the diverse realms of cybersecurity has equipped participants with a multifaceted skill set essential for navigating the complexities of the digital landscape. From foundational knowledge in network security and operating systems to the intricacies of incident detection, response, and stakeholder communication, learners have gained valuable insights and practical expertise. The emphasis on hands-on experiences, real-world applications, and engagement with cutting-edge tools ensures that participants not only comprehend theoretical concepts but also develop the proficiency to address the dynamic challenges of cybersecurity in professional settings. As they embark on applying these acquired skills, participants are well-positioned to contribute effectively to the ever-evolving field of cybersecurity."
       }
     ],
-    "course": 8,
+    "course": "Course 8 – Put It to Work: Prepare for Cybersecurity Jobs",
     "mod_no": 3
   },
   {
@@ -17565,7 +17565,7 @@
         "explanation": "In conclusion, the journey through this comprehensive cybersecurity program has equipped participants with a robust foundation in various aspects of cybersecurity. From understanding the fundamentals of networks and operating systems to mastering incident response and engaging with the cybersecurity community, learners have gained a diverse skill set essential for a successful career in cybersecurity. The emphasis on hands-on experience, practical tools, and real-world scenarios ensures that participants are not only knowledgeable in theory but also capable of applying their skills in practical, industry-relevant situations. As participants conclude this program, they are well-prepared to navigate the complex and ever-evolving landscape of cybersecurity, armed with the expertise needed to address emerging threats and contribute effectively to the security of digital ecosystems."
       }
     ],
-    "course": 8,
+    "course": "Course 8 – Put It to Work: Prepare for Cybersecurity Jobs",
     "mod_no": 4
   },
   {
@@ -18139,7 +18139,7 @@
         "explanation": "In conclusion, this cybersecurity program offers a holistic and practical journey through the diverse domains of cybersecurity, equipping participants with a robust skill set to tackle the evolving challenges in the field. Through a meticulous blend of theoretical knowledge and hands-on applications, learners gain proficiency in fundamental areas such as networking, operating systems, and threat modeling, progressing to advanced topics like incident response, network security, and security controls. The program not only imparts technical expertise but also hones critical thinking, communication, and collaboration skills crucial for a successful cybersecurity career. The emphasis on real-world scenarios, industry tools, and engagement with the cybersecurity community ensures that participants are well-prepared for the dynamic and ever-changing landscape of cybersecurity. As participants complete the program, they emerge with a comprehensive understanding of cybersecurity principles and practices, ready to make meaningful contributions to the field."
       }
     ],
-    "course": 8,
+    "course": "Course 8 – Put It to Work: Prepare for Cybersecurity Jobs",
     "mod_no": 5
   }
 ]
