@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Self-Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f8f8f8; }
+    h1, h2 { text-align: center; }
+    .question-box { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .choices { list-style: none; padding: 0; }
+    .choices li { padding: 8px; background: #eee; margin-bottom: 10px; border-radius: 4px; cursor: pointer; }
+    .choices li.correct { background: #c8f7c5; }
+    .choices li.incorrect { background: #f7c5c5; }
+    button { padding: 10px 15px; margin: 10px 5px; border: none; border-radius: 5px; cursor: pointer; background-color: #007bff; color: white; }
+    .explanation { background: #f0f0f0; padding: 10px; margin-top: 10px; border-left: 5px solid #007bff; }
+    #quiz-setup, #quiz-box { max-width: 700px; margin: auto; }
+  </style>
+</head>
+<body>
+  <h1>Cybersecurity Self-Test</h1>
+  <div id="quiz-setup">
+    <h2>Select Test Source</h2>
+    <select id="quiz-select">
+      <option value="google_cybersecurity_questions.json">Google Cybersecurity Certificate</option>
+    </select>
+    <h2>Select Modules</h2>
+    <div id="module-checkboxes"></div>
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <div id="quiz-box" style="display:none;">
+    <div class="question-box">
+      <div id="question-text"></div>
+      <ul class="choices" id="choices-list"></ul>
+      <button id="submit-btn" onclick="submitAnswer()">Submit</button>
+      <div class="explanation" id="explanation-box" style="display:none;"></div>
+      <button onclick="nextQuestion()">Next Question</button>
+    </div>
+  </div>
+
+  <script>
+    let quizData = [];
+    let selectedModules = [];
+    let filteredQuestions = [];
+    let currentQuestionIndex = 0;
+    let currentQuestion = null;
+
+    function loadQuizModules(file) {
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          quizData = data;
+          const container = document.getElementById('module-checkboxes');
+          container.innerHTML = '';
+          data.forEach((mod, i) => {
+            if (mod.questions.length > 0) {
+              const id = `Module-${i}`;
+              const label = document.createElement('label');
+              label.innerHTML = `<input type="checkbox" id="${id}" value="${mod.module}"> ${mod.module}`;
+              container.appendChild(label);
+              container.appendChild(document.createElement('br'));
+            }
+          });
+        });
+    }
+
+    function startQuiz() {
+      const selected = Array.from(document.querySelectorAll('#module-checkboxes input:checked')).map(cb => cb.value);
+      selectedModules = selected;
+      filteredQuestions = quizData.filter(mod => selected.includes(mod.module))
+                                  .flatMap(mod => mod.questions);
+      filteredQuestions = filteredQuestions.sort(() => 0.5 - Math.random());
+      if (filteredQuestions.length === 0) {
+        alert('No questions found in selected modules.');
+        return;
+      }
+      document.getElementById('quiz-setup').style.display = 'none';
+      document.getElementById('quiz-box').style.display = 'block';
+      currentQuestionIndex = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      currentQuestion = filteredQuestions[currentQuestionIndex];
+      document.getElementById('question-text').innerText = currentQuestion.question;
+      const choicesList = document.getElementById('choices-list');
+      choicesList.innerHTML = '';
+      currentQuestion.choices.forEach((choice, i) => {
+        const li = document.createElement('li');
+        li.innerText = choice;
+        li.onclick = () => selectChoice(li);
+        choicesList.appendChild(li);
+      });
+      document.getElementById('explanation-box').style.display = 'none';
+    }
+
+    function selectChoice(choiceElem) {
+      const allChoices = document.querySelectorAll('#choices-list li');
+      allChoices.forEach(li => li.classList.remove('selected'));
+      choiceElem.classList.add('selected');
+    }
+
+    function submitAnswer() {
+      const selected = document.querySelector('#choices-list li.selected');
+      if (!selected) return alert('Please select an answer.');
+      const correctAnswers = currentQuestion.correct_answers;
+      document.querySelectorAll('#choices-list li').forEach(li => {
+        if (correctAnswers.includes(li.innerText.trim())) {
+          li.classList.add('correct');
+        } else if (li.classList.contains('selected')) {
+          li.classList.add('incorrect');
+        }
+      });
+      document.getElementById('explanation-box').style.display = 'block';
+      document.getElementById('explanation-box').innerText = currentQuestion.explanation;
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex >= filteredQuestions.length) {
+        alert('Quiz complete! You answered all questions.');
+        location.reload();
+      } else {
+        showQuestion();
+      }
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      const quizSelect = document.getElementById('quiz-select');
+      loadQuizModules(quizSelect.value);
+      quizSelect.onchange = () => loadQuizModules(quizSelect.value);
+    });
+  </script>
+</body>
+</html>
