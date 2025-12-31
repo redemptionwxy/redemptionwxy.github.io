@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Flash Cards</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background: #f5f7fb;
+  text-align: center;
+  padding: 40px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.upload {
+  margin-bottom: 20px;
+}
+
+.mode-toggle {
+  margin-bottom: 20px;
+}
+
+button {
+  margin: 6px;
+  padding: 10px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #4f46e5;
+  color: white;
+}
+
+button.secondary {
+  background: #64748b;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Flashcard */
+.card-container {
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.card {
+  width: 340px;
+  height: 220px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  cursor: pointer;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.card-front {
+  background: white;
+}
+
+.card-back {
+  background: #4f46e5;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+/* Quiz mode */
+.quiz {
+  display: none;
+  margin-top: 20px;
+}
+
+.quiz input {
+  padding: 10px;
+  font-size: 18px;
+  width: 260px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.correct {
+  color: green;
+}
+
+.wrong {
+  color: red;
+}
+
+.progress {
+  margin-top: 10px;
+  color: #555;
+}
+</style>
+</head>
+
+<body>
+<!-- Navbar -->
+        <div class="container-fluid p-0">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Wang's Home</a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="Quiz.html">Quiz</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Color.html">Color</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Highlighting.html">Highlighting</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Typing_speed.html">Typing Speed</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Flashcard.html">Flash Cards</a>
+                        </li>                        
+                        <li class="nav-item active">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <!-- End Navbar -->
+<h1>Flash Cards</h1>
+
+<div class="upload">
+  <input type="file" id="fileInput" accept=".txt,.json" />
+</div>
+
+<div class="mode-toggle">
+  <button onclick="setMode('flash')">Flashcard Mode</button>
+  <button onclick="setMode('quiz')" class="secondary">Quiz Mode</button>
+</div>
+
+<!-- Flashcard Mode -->
+<div id="flashMode">
+  <div class="card-container">
+    <div id="flashcard" class="card">
+      <div class="card-face card-front" id="cardFront">
+        Upload a file to start
+      </div>
+      <div class="card-face card-back" id="cardBack"></div>
+    </div>
+  </div>
+  <br> <br>
+  <div>
+    <button onclick="flipCard()">Flip</button>
+    <button onclick="nextCard()">Next</button>
+    <button onclick="randomCard()">Random</button>
+    <button onclick="random20()">🎲 Give Me 20!</button>
+  </div>
+
+  <div class="progress" id="progress"></div>
+</div>
+
+<!-- Quiz Mode -->
+<div id="quizMode" class="quiz">
+  <h2 id="quizPrompt">English</h2>
+
+  <input
+    type="text"
+    id="quizInput"
+    placeholder="Type Chinese here"
+    onkeydown="if(event.key==='Enter') checkAnswer()"
+  />
+
+  <div>
+    <button onclick="checkAnswer()">Submit</button>
+    <button onclick="nextQuiz()" class="secondary">Next</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+let allCards = [];
+let flashcards = [];
+let currentIndex = 0;
+let mode = "flash";
+
+const card = document.getElementById("flashcard");
+const front = document.getElementById("cardFront");
+const back = document.getElementById("cardBack");
+const progress = document.getElementById("progress");
+
+const quizPrompt = document.getElementById("quizPrompt");
+const quizInput = document.getElementById("quizInput");
+const feedback = document.getElementById("feedback");
+
+document.getElementById("fileInput").addEventListener("change", handleFileUpload);
+card.onclick = flipCard;
+
+function handleFileUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => parseFile(file.name, reader.result);
+  reader.readAsText(file, "UTF-8");
+}
+
+function parseFile(name, content) {
+  if (name.endsWith(".json")) {
+    allCards = JSON.parse(content);
+  } else {
+    allCards = content
+      .split("\n")
+      .map(l => l.trim())
+      .filter(Boolean)
+      .map(l => {
+        const [front, back] = l.split("|");
+        return { front, back };
+      });
+  }
+
+  flashcards = [...allCards];
+  currentIndex = 0;
+  showCard();
+  updateQuiz();
+}
+
+function showCard() {
+  if (!flashcards.length) return;
+  front.textContent = flashcards[currentIndex].front;
+  back.textContent = flashcards[currentIndex].back;
+  card.classList.remove("flipped");
+  progress.textContent = `${currentIndex + 1} / ${flashcards.length}`;
+}
+
+function flipCard() {
+  card.classList.toggle("flipped");
+}
+
+function nextCard() {
+  currentIndex = (currentIndex + 1) % flashcards.length;
+  showCard();
+}
+
+function randomCard() {
+  currentIndex = Math.floor(Math.random() * flashcards.length);
+  showCard();
+}
+
+function random20() {
+  flashcards = shuffle([...allCards]).slice(0, 20);
+  currentIndex = 0;
+  showCard();
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+/* Mode Switching */
+function setMode(m) {
+  mode = m;
+  document.getElementById("flashMode").style.display =
+    m === "flash" ? "block" : "none";
+  document.getElementById("quizMode").style.display =
+    m === "quiz" ? "block" : "none";
+
+  if (m === "quiz") updateQuiz();
+}
+
+/* Quiz Logic */
+function updateQuiz() {
+  if (!flashcards.length) return;
+  quizPrompt.textContent = flashcards[currentIndex].back;
+  quizInput.value = "";
+  feedback.textContent = "";
+}
+
+function checkAnswer() {
+  const answer = quizInput.value.trim();
+  const correct = flashcards[currentIndex].front.trim();
+
+  if (answer === correct) {
+    feedback.textContent = "✔ Correct!";
+    feedback.className = "feedback correct";
+  } else {
+    feedback.textContent = `✘ Wrong — ${correct}`;
+    feedback.className = "feedback wrong";
+  }
+}
+
+function nextQuiz() {
+  nextCard();
+  updateQuiz();
+}
+</script>
+
+</body>
+</html>
