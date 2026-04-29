@@ -29,21 +29,33 @@ h1 {
 
 button {
   margin: 6px;
-  padding: 10px 16px;
-  font-size: 15px;
-  border: none;
-  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
   cursor: pointer;
-  background: #4f46e5;
-  color: white;
+  background: #ffffff;
+  color: #334155;
+  transition: all 0.2s ease-in-out;
 }
 
-button.secondary {
-  background: #64748b;
+button.primary-btn {
+  background: #1e293b;
+  color: #ffffff;
+  border-color: #1e293b;
 }
 
 button:hover {
-  opacity: 0.9;
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+button.primary-btn:hover {
+  background: #334155;
+  color: #ffffff;
+  border-color: #334155;
 }
 
 /* Flashcard */
@@ -74,9 +86,11 @@ button:hover {
   backface-visibility: hidden;
   border-radius: 12px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  text-align: center;
+  font-size: 36px;
   padding: 20px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
@@ -86,7 +100,7 @@ button:hover {
 }
 
 .card-back {
-  background: #4f46e5;
+  background: #1e293b;
   color: white;
   transform: rotateY(180deg);
 }
@@ -98,30 +112,33 @@ button:hover {
 }
 
 .quiz input {
-  padding: 10px;
-  font-size: 18px;
-  width: 260px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 12px 15px;
+  font-size: 20px;
+  width: 320px;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.quiz input:focus {
+  border-color: #1e293b;
 }
 
 .feedback {
   margin-top: 10px;
-  font-size: 18px;
-  font-weight: bold;
 }
 
 .correct {
-  color: green;
+  color: #16a34a;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .wrong {
-  color: red;
-}
-
-.progress {
-  margin-top: 10px;
-  color: #555;
+  color: #dc2626;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -163,12 +180,12 @@ button:hover {
 <h1>Flash Cards</h1>
 
 <div class="upload">
-  <input type="file" id="fileInput" accept=".txt,.json" />
+  <input type="file" id="fileInput" accept=".txt,.json" class="form-control-file border p-2 rounded mx-auto" style="max-width: 320px; background: white; border-color: #cbd5e1 !important;" />
 </div>
 
 <div class="mode-toggle">
-  <button onclick="setMode('flash')">Flashcard Mode</button>
-  <button onclick="setMode('quiz')" class="secondary">Quiz Mode</button>
+  <button id="btnFlash" onclick="setMode('flash')" class="primary-btn">Flashcard Mode</button>
+  <button id="btnQuiz" onclick="setMode('quiz')">Quiz Mode</button>
 </div>
 
 <!-- Flashcard Mode -->
@@ -184,31 +201,57 @@ button:hover {
   <br> <br>
   <div>
     <button onclick="flipCard()">Flip</button>
-    <button onclick="nextCard()">Next</button>
+    <button onclick="nextCard()" class="primary-btn">Skip</button>
     <button onclick="randomCard()">Random</button>
     <button onclick="random20()">🎲 Give Me 20!</button>
   </div>
 
-  <div class="progress" id="progress"></div>
+  <!-- Congrats Box -->
+  <div id="congratsAlert" class="alert alert-success mx-auto mt-4" style="display: none; max-width: 340px; font-size: 16px; border-radius: 8px; font-weight: 500;">
+    🎉 <strong>Congratulations!</strong> You've finished the list!
+  </div>
+
+  <div class="progress-container mx-auto mt-4" style="max-width: 340px;">
+    <div class="progress" style="height: 20px;">
+      <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+    </div>
+    <div id="progressText" class="mt-2" style="font-size: 18px; font-weight: bold; color: #555;"></div>
+  </div>
 </div>
 
 <!-- Quiz Mode -->
 <div id="quizMode" class="quiz">
-  <h2 id="quizPrompt">English</h2>
-
-  <input
-    type="text"
-    id="quizInput"
-    placeholder="Type Chinese here"
-    onkeydown="if(event.key==='Enter') checkAnswer()"
-  />
-
-  <div>
-    <button onclick="checkAnswer()">Submit</button>
-    <button onclick="nextQuiz()" class="secondary">Next</button>
+  <!-- Display Box -->
+  <div class="mx-auto mb-3 d-flex justify-content-center align-items-center" style="width: fit-content; border-radius: 20px; border: 1px solid #cbd5e1; background-color: #f8fafc; padding: 4px 18px; gap: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <span class="text-muted text-uppercase" style="font-size: 12px; font-weight: 700; letter-spacing: 1px;">Display:</span>
+    <div class="custom-control custom-radio mb-0">
+      <input type="radio" id="showPinyin" name="quizShowOption" class="custom-control-input" value="pinyin" checked onchange="updateQuiz()">
+      <label class="custom-control-label pt-1" for="showPinyin" style="font-size: 14px; font-weight: 600; color: #334155; cursor: pointer; line-height: 1.2;">拼音</label>
+    </div>
+    <div class="custom-control custom-radio mb-0">
+      <input type="radio" id="showEnglish" name="quizShowOption" class="custom-control-input" value="english" onchange="updateQuiz()">
+      <label class="custom-control-label pt-1" for="showEnglish" style="font-size: 14px; font-weight: 600; color: #334155; cursor: pointer; line-height: 1.2;">English</label>
+    </div>
   </div>
 
-  <div class="feedback" id="feedback"></div>
+  <!-- Centered Quiz Area -->
+  <div class="d-flex flex-column justify-content-center align-items-center" style="margin-top: 45px;">
+    <h2 id="quizPrompt" style="color: #1e293b; margin-bottom: 15px;">English</h2>
+
+    <input
+      type="text"
+      id="quizInput"
+      placeholder="Type Chinese here"
+      onkeydown="if(event.key==='Enter') checkAnswer()"
+    />
+
+    <div class="mt-3">
+      <button onclick="checkAnswer()" class="primary-btn">Submit</button>
+      <button onclick="nextQuiz()">Skip</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
 </div>
 
 <script>
@@ -216,11 +259,11 @@ let allCards = [];
 let flashcards = [];
 let currentIndex = 0;
 let mode = "flash";
+let flipTimeout;
 
 const card = document.getElementById("flashcard");
 const front = document.getElementById("cardFront");
 const back = document.getElementById("cardBack");
-const progress = document.getElementById("progress");
 
 const quizPrompt = document.getElementById("quizPrompt");
 const quizInput = document.getElementById("quizInput");
@@ -247,8 +290,15 @@ function parseFile(name, content) {
       .map(l => l.trim())
       .filter(Boolean)
       .map(l => {
-        const [front, back] = l.split("|");
-        return { front, back };
+        const parts = l.split("|");
+        if (parts.length >= 3) {
+            return { chinese: parts[0].trim(), pinyin: parts[1].trim(), english: parts[2].trim() };
+        } else if (parts.length === 2) {
+            // Fallback for old 2-part format
+            return { chinese: parts[0].trim(), pinyin: "", english: parts[1].trim() };
+        } else {
+            return { chinese: parts[0].trim(), pinyin: "", english: "" };
+        }
       });
   }
 
@@ -260,10 +310,38 @@ function parseFile(name, content) {
 
 function showCard() {
   if (!flashcards.length) return;
-  front.textContent = flashcards[currentIndex].front;
-  back.textContent = flashcards[currentIndex].back;
-  card.classList.remove("flipped");
-  progress.textContent = `${currentIndex + 1} / ${flashcards.length}`;
+  
+  clearTimeout(flipTimeout);
+  if (card.classList.contains("flipped")) {
+    card.classList.remove("flipped");
+    flipTimeout = setTimeout(() => {
+      updateCardContent();
+    }, 300); // Waits half-way through the 0.6s animation before updating the text
+  } else {
+    updateCardContent();
+  }
+}
+
+function updateCardContent() {
+  if (!flashcards.length) return;
+  const cardData = flashcards[currentIndex];
+  
+  const chinese = cardData.chinese || cardData.front || "";
+  const pinyin = cardData.pinyin || "";
+  const english = cardData.english || cardData.back || "";
+  
+  front.innerHTML = `<div style="font-size: 40px; font-weight: bold;">${chinese}</div>`;
+  
+  let backHTML = `<div style="font-size: 38px; margin-bottom: 15px; font-weight: bold;">${chinese}</div>`;
+  if (pinyin) backHTML += `<div style="font-size: 28px; font-weight: 500; color: #94a3b8; margin-bottom: 8px;">${pinyin}</div>`;
+  if (english) backHTML += `<div style="font-size: 24px; font-weight: 400; color: #cbd5e1;">${english}</div>`;
+  back.innerHTML = backHTML;
+  
+  const currentNum = currentIndex + 1;
+  const totalNum = flashcards.length;
+  document.getElementById('progressText').textContent = `${currentNum} / ${totalNum}`;
+  const pct = (currentNum / totalNum) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
 }
 
 function flipCard() {
@@ -271,8 +349,19 @@ function flipCard() {
 }
 
 function nextCard() {
+  if (flashcards.length > 0 && currentIndex === flashcards.length - 1) {
+    showCongrats();
+  }
   currentIndex = (currentIndex + 1) % flashcards.length;
   showCard();
+}
+
+function showCongrats() {
+  const alertBox = document.getElementById("congratsAlert");
+  alertBox.style.display = "block";
+  setTimeout(() => {
+    alertBox.style.display = "none";
+  }, 3000);
 }
 
 function randomCard() {
@@ -298,27 +387,51 @@ function setMode(m) {
   document.getElementById("quizMode").style.display =
     m === "quiz" ? "block" : "none";
 
+  if (m === "flash") {
+    document.getElementById("btnFlash").classList.add("primary-btn");
+    document.getElementById("btnQuiz").classList.remove("primary-btn");
+  } else {
+    document.getElementById("btnQuiz").classList.add("primary-btn");
+    document.getElementById("btnFlash").classList.remove("primary-btn");
+  }
+
   if (m === "quiz") updateQuiz();
 }
 
 /* Quiz Logic */
 function updateQuiz() {
   if (!flashcards.length) return;
-  quizPrompt.textContent = flashcards[currentIndex].back;
+  
+  const cardData = flashcards[currentIndex];
+  const pinyin = cardData.pinyin || "";
+  const english = cardData.english || cardData.back || "";
+  
+  const showOption = document.querySelector('input[name="quizShowOption"]:checked').value;
+  quizPrompt.textContent = showOption === 'pinyin' ? pinyin : english;
+  
   quizInput.value = "";
   feedback.textContent = "";
 }
 
 function checkAnswer() {
+  if (!flashcards.length) return;
   const answer = quizInput.value.trim();
-  const correct = flashcards[currentIndex].front.trim();
+  const cardData = flashcards[currentIndex];
+  
+  const correct = (cardData.chinese || cardData.front || "").trim();
+  const pinyin = cardData.pinyin || "";
+  const english = cardData.english || cardData.back || "";
+  
+  let allThreeHTML = `<div style="margin-top: 10px; font-size: 26px; font-weight: bold; color: #1e293b;">${correct}</div>`;
+  if (pinyin) allThreeHTML += `<div style="font-size: 20px; font-weight: 500; color: #475569; margin-top: 4px;">${pinyin}</div>`;
+  if (english) allThreeHTML += `<div style="font-size: 18px; color: #64748b; margin-top: 2px;">${english}</div>`;
 
   if (answer === correct) {
-    feedback.textContent = "✔ Correct!";
-    feedback.className = "feedback correct";
+    feedback.innerHTML = `<div class="correct">✔ Correct!</div>${allThreeHTML}`;
+    feedback.className = "feedback";
   } else {
-    feedback.textContent = `✘ Wrong — ${correct}`;
-    feedback.className = "feedback wrong";
+    feedback.innerHTML = `<div class="wrong">✘ Wrong</div>${allThreeHTML}`;
+    feedback.className = "feedback";
   }
 }
 
@@ -330,4 +443,3 @@ function nextQuiz() {
 
 </body>
 </html>
-
