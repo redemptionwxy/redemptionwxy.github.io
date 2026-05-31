@@ -71,8 +71,8 @@ button.primary-btn:hover {
 }
 
 .card {
-  width: 340px;
-  height: 220px;
+  width: 550px;
+  height: 380px;
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.6s;
@@ -117,7 +117,7 @@ button.primary-btn:hover {
 
 .quiz input {
   padding: 12px 15px;
-  font-size: 20px;
+  font-size: 30px;
   width: 320px;
   border-radius: 8px;
   border: 2px solid #cbd5e1;
@@ -143,6 +143,11 @@ button.primary-btn:hover {
   color: #dc2626;
   font-size: 20px;
   font-weight: bold;
+}
+
+/* Regular Script (Zhengkai) Font Stack */
+.kaiti {
+  font-family: "KaiTi", "楷体", "STKaiti", "华文楷体", "BiaoKai", "標楷體", serif;
 }
 </style>
 </head>
@@ -204,7 +209,8 @@ button.primary-btn:hover {
   </div>
   <div>
     <button onclick="flipCard()">Flip</button>
-    <button onclick="nextCard()" class="primary-btn">Skip</button>
+    <button onclick="nextCard()" class="primary-btn">Next</button>
+    <button onclick="originalList()">Original List</button>
     <button onclick="randomCard()">Random</button>
     <button onclick="random20()">🎲 Give Me 20!</button>
   </div>
@@ -239,11 +245,12 @@ button.primary-btn:hover {
 
   <!-- Centered Quiz Area -->
   <div class="d-flex flex-column justify-content-center align-items-center" style="margin-top: 45px;">
-    <h2 id="quizPrompt" style="color: #1e293b; margin-bottom: 15px;">English</h2>
+    <h2 id="quizPrompt" style="color: #1e293b; margin-bottom: 15px; font-size: 32px;">English</h2>
 
     <input
       type="text"
       id="quizInput"
+      class="kaiti"
       placeholder="Type Chinese here"
       onkeydown="if(event.key==='Enter') checkAnswer()"
     />
@@ -333,11 +340,11 @@ function updateCardContent() {
   const pinyin = cardData.pinyin || "";
   const english = cardData.english || cardData.back || "";
   
-  front.innerHTML = `<div style="font-size: 40px; font-weight: bold;">${chinese}</div>`;
+  front.innerHTML = `<div class="kaiti" style="font-size: 100px; font-weight: bold;">${chinese}</div>`;
   
-  let backHTML = `<div style="font-size: 38px; margin-bottom: 15px; font-weight: bold;">${chinese}</div>`;
-  if (pinyin) backHTML += `<div style="font-size: 28px; font-weight: 500; color: #94a3b8; margin-bottom: 8px;">${pinyin}</div>`;
-  if (english) backHTML += `<div style="font-size: 24px; font-weight: 400; color: #cbd5e1;">${english}</div>`;
+  let backHTML = `<div class="kaiti" style="font-size: 80px; margin-bottom: 15px; font-weight: bold;">${chinese}</div>`;
+  if (pinyin) backHTML += `<div style="font-size: 36px; font-weight: 500; color: #94a3b8; margin-bottom: 8px;">${pinyin}</div>`;
+  if (english) backHTML += `<div style="font-size: 30px; font-weight: 400; color: #cbd5e1;">${english}</div>`;
   back.innerHTML = backHTML;
   
   const currentNum = currentIndex + 1;
@@ -364,18 +371,28 @@ function showCongrats() {
   alertBox.style.display = "block";
   setTimeout(() => {
     alertBox.style.display = "none";
-  }, 3000);
+  }, 5000);
 }
 
 function randomCard() {
-  currentIndex = Math.floor(Math.random() * flashcards.length);
+  flashcards = shuffle([...allCards]);
+  currentIndex = 0;
   showCard();
+  updateQuiz();
 }
 
 function random20() {
   flashcards = shuffle([...allCards]).slice(0, 20);
   currentIndex = 0;
   showCard();
+  updateQuiz();
+}
+
+function originalList() {
+  flashcards = [...allCards];
+  currentIndex = 0;
+  showCard();
+  updateQuiz();
 }
 
 function shuffle(arr) {
@@ -425,9 +442,9 @@ function checkAnswer() {
   const pinyin = cardData.pinyin || "";
   const english = cardData.english || cardData.back || "";
   
-  let allThreeHTML = `<div style="margin-top: 10px; font-size: 26px; font-weight: bold; color: #1e293b;">${correct}</div>`;
-  if (pinyin) allThreeHTML += `<div style="font-size: 20px; font-weight: 500; color: #475569; margin-top: 4px;">${pinyin}</div>`;
-  if (english) allThreeHTML += `<div style="font-size: 18px; color: #64748b; margin-top: 2px;">${english}</div>`;
+  let allThreeHTML = `<div class="kaiti" style="margin-top: 10px; font-size: 36px; font-weight: bold; color: #1e293b;">${correct}</div>`;
+  if (pinyin) allThreeHTML += `<div style="font-size: 28px; font-weight: 500; color: #475569; margin-top: 4px;">${pinyin}</div>`;
+  if (english) allThreeHTML += `<div style="font-size: 24px; color: #64748b; margin-top: 2px;">${english}</div>`;
 
   if (answer === correct) {
     feedback.innerHTML = `<div class="correct">✔ Correct!</div>${allThreeHTML}`;
