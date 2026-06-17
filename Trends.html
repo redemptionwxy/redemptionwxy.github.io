@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Trends 2001–2020</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Plotly + PapaParse + WordCloud -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #0f1822;
+            --panel: #16222f;
+            --line: #23323f;
+            --ink: #e6edf3;
+            --muted: #8aa0b3;
+            --amber: #f0a830;
+            --light-bg: #f5f7fb;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-bg);
+            color: #1e293b;
+        }
+
+        /* ---------- Navbar ---------- */
+        .navbar-brand {
+            margin-right: 50px;
+        }
+
+        /* ---------- Hero Header ---------- */
+        .trends-hero {
+            background: linear-gradient(135deg, #0f1822 0%, #1a2d3d 100%);
+            padding: 40px 0 28px;
+            text-align: center;
+        }
+
+        .trends-hero h1 {
+            font-family: Georgia, serif;
+            font-size: 2rem;
+            letter-spacing: -0.01em;
+            color: #e6edf3;
+            margin: 0 0 6px;
+            font-weight: normal;
+        }
+
+        .trends-hero .sub {
+            color: #8aa0b3;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .trends-hero .sub .amber {
+            color: #f0a830;
+            font-weight: 600;
+        }
+
+        /* ---------- Controls Card ---------- */
+        .controls-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: flex-end;
+        }
+
+        .ctl {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ctl label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        select,
+        input[type=range] {
+            background: #f8fafc;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            min-width: 170px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus,
+        input[type=range]:focus {
+            border-color: #3b82f6;
+        }
+
+        .yearval {
+            font-family: ui-monospace, Consolas, monospace;
+            color: #3b82f6;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .yearends {
+            display: flex;
+            justify-content: space-between;
+            font-family: ui-monospace, Consolas, monospace;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            margin-top: 3px;
+        }
+
+        .toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+
+        .toggle input {
+            accent-color: #3b82f6;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ---------- Map Area ---------- */
+        .map-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        #map {
+            width: 100%;
+            height: 440px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 0.82rem;
+            margin: 8px 2px 0;
+            text-align: center;
+        }
+
+        /* ---------- Detail Panel ---------- */
+        .detail-panel {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            min-height: 200px;
+        }
+
+        .detail-panel h2 {
+            font-family: Georgia, serif;
+            font-size: 1.35rem;
+            color: #1e293b;
+            margin: 0 0 10px;
+            font-weight: normal;
+        }
+
+        .warn {
+            color: #d97706;
+            font-size: 0.82rem;
+            margin: 2px 0 14px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        .detail {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        @media (max-width: 780px) {
+            .detail {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #cloud {
+            width: 100%;
+            height: 460px;
+            background: #0f1822;
+            border: 1px solid #23323f;
+            border-radius: 10px;
+        }
+
+        .list h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            margin: 0 0 10px;
+            font-weight: 600;
+        }
+
+        .row {
+            font-family: ui-monospace, Consolas, monospace;
+            font-size: 0.9rem;
+            margin: 0.28rem 0;
+            line-height: 1.35;
+            color: #334155;
+        }
+
+        .row .rk {
+            color: #3b82f6;
+            font-weight: 700;
+            display: inline-block;
+            width: 1.6em;
+            text-align: right;
+            margin-right: 0.5em;
+        }
+
+        .row .o {
+            color: #94a3b8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .empty-state b {
+            color: #64748b;
+        }
+
+        /* ---------- Footer ---------- */
+        .trends-footer {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
+            text-align: center;
+        }
+
+        .trends-footer a {
+            color: #3b82f6;
+        }
+
+        .trends-footer a:hover {
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ========== Navbar ========== -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">Wang's Home</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="Trends.html">Trends</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Quiz.html">Quiz</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Color.html">Color</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Highlighting.html">Highlighting</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Typing_speed.html">Typing Speed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Flashcard.html">Flash Cards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- ========== End Navbar ========== -->
+
+    <!-- ========== Hero Header ========== -->
+    <div class="trends-hero">
+        <div class="container">
+            <h1>Global Google Search Trends</h1>
+            <p class="sub">What the world searched, 2001–2020 — top <span class="amber">TRENDING</span>
+                queries by country (biggest spikes each year, not raw volume).</p>
+        </div>
+    </div>
+    <!-- ========== End Hero ========== -->
+
+    <!-- ========== Main Content ========== -->
+    <div class="container mt-4">
+
+        <!-- Controls -->
+        <div class="controls-card">
+            <div class="controls">
+                <div class="ctl" style="flex:1 1 300px;">
+                    <label for="year">Year <span id="yearval" class="yearval"></span></label>
+                    <input type="range" id="year" style="width:100%">
+                    <div class="yearends"><span id="ymin"></span><span id="ymax"></span></div>
+                </div>
+                <div class="ctl">
+                    <label for="country">Country</label>
+                    <select id="country"></select>
+                </div>
+                <div class="ctl">
+                    <label for="category">Category</label>
+                    <select id="category"></select>
+                </div>
+                <label class="toggle" id="translateWrap" title="Requires a baked-in query_en column">
+                    <input type="checkbox" id="translate"> <span>Translate to English</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div class="map-card">
+            <div id="map"></div>
+            <p class="hint">Click a highlighted country to explore it, or use the dropdown above.</p>
+        </div>
+
+        <!-- Detail Panel -->
+        <div class="detail-panel" id="panel"></div>
+
+        <!-- Footer -->
+        <div class="trends-footer">
+            Source: Google Year in Search ·
+            <a href="https://www.kaggle.com/datasets/dhruvildave/google-trends-dataset" target="_blank" rel="noopener">Kaggle Dataset</a>
+        </div>
+    </div>
+    <!-- ========== End Main Content ========== -->
+
+    <!-- ========== Script ========== -->
+    <script>
+        const DATA_URL = "Google Trends/trends.csv";
+        const NAME_FIXES = { "Czechia": "Czech Republic", "Myanmar (Burma)": "Myanmar" };
+        const INV_FIXES = { "Czech Republic": "Czechia", "Myanmar": "Myanmar (Burma)" };
+        const NON_MAP = new Set(["Global", "Hong Kong", "Puerto Rico"]);
+        const MINORITY = new Set(["China", "Russia", "South Korea"]);
+
+        let ROWS = [];
+        let HAS_EN = false;
+        const state = { year: null, country: null, category: "__all__", translate: false };
+
+        const $ = id => document.getElementById(id);
+
+        // ---------- load ----------
+        function onParsed(res) {
+            ROWS = (res.data || []).filter(r => r.location && r.year && r.query)
+                .map(r => ({ ...r, year: +r.year, rank: +r.rank }));
+            if (!ROWS.length) { failData("Loaded the file but found no usable rows."); return; }
+            HAS_EN = "query_en" in ROWS[0];
+            initControls();
+        }
+
+        Papa.parse(DATA_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: onParsed,
+            error: () => failData()
+        });
+
+        function failData(msg) {
+            $("panel").innerHTML =
+                `<div class="empty-state"><b>Couldn't load ${DATA_URL}.</b> ${msg || ""}<br><br>
+                 Make sure <code>trends.csv</code> is in the Google Trends folder.</div>`;
+        }
+
+        // ---------- controls ----------
+        function initControls() {
+            const years = [...new Set(ROWS.map(r => r.year))].sort((a, b) => a - b);
+            const yr = $("year");
+            yr.min = years[0];
+            yr.max = years[years.length - 1];
+            yr.step = 1;
+            yr.value = years[years.length - 1];
+            state.year = +yr.value;
+            $("ymin").textContent = years[0];
+            $("ymax").textContent = years[years.length - 1];
+
+            const locs = [...new Set(ROWS.map(r => r.location))].sort();
+            $("country").innerHTML = locs.map(l => `<option>${l}</option>`).join("");
+            state.country = locs.includes("United States") ? "United States" : locs[0];
+            $("country").value = state.country;
+
+            if (!HAS_EN) {
+                $("translate").disabled = true;
+                $("translateWrap").title = "No query_en column found — run pretranslate.py to bake one in";
+                $("translateWrap").style.opacity = 0.5;
+            }
+
+            yr.addEventListener("input", () => {
+                state.year = +yr.value;
+                $("yearval").textContent = state.year;
+            });
+            yr.addEventListener("change", () => { state.year = +yr.value; refreshAll(); });
+            $("country").addEventListener("change", e => {
+                state.country = e.target.value;
+                state.category = "__all__";
+                refreshDetail();
+            });
+            $("category").addEventListener("change", e => { state.category = e.target.value; refreshDetail(); });
+            $("translate").addEventListener("change", e => { state.translate = e.target.checked; refreshDetail(); });
+
+            refreshAll();
+        }
+
+        function refreshAll() { $("yearval").textContent = state.year; renderMap(); refreshDetail(); }
+
+        // ---------- map ----------
+        function renderMap() {
+            const yearRows = ROWS.filter(r => r.year === state.year && !NON_MAP.has(r.location));
+            const byLoc = {};
+            yearRows.forEach(r => byLoc[r.location] = (byLoc[r.location] || 0) + 1);
+            const locs = Object.keys(byLoc);
+
+            const data = [{
+                type: "choropleth",
+                locationmode: "country names",
+                locations: locs.map(l => NAME_FIXES[l] || l),
+                z: locs.map(l => byLoc[l]),
+                text: locs,
+                colorscale: [[0, "#1c2b3a"], [1, "#f0a830"]],
+                marker: { line: { color: "#0f1822", width: 0.5 } },
+                colorbar: {
+                    title: "queries",
+                    tickfont: { color: "#8aa0b3" },
+                    titlefont: { color: "#8aa0b3" }
+                }
+            }];
+            const layout = {
+                paper_bgcolor: "#ffffff",
+                geo: {
+                    bgcolor: "#ffffff",
+                    showframe: false,
+                    showcoastlines: false,
+                    landcolor: "#e2e8f0",
+                    projection: { type: "natural earth" }
+                },
+                margin: { l: 0, r: 0, t: 0, b: 0 },
+                height: 440
+            };
+            Plotly.react("map", data, layout, { displayModeBar: false, responsive: true });
+
+            $("map").on("plotly_click", ev => {
+                let name = ev.points[0].text || ev.points[0].location;
+                name = INV_FIXES[name] || name;
+                if ([...new Set(ROWS.map(r => r.location))].includes(name)) {
+                    state.country = name;
+                    $("country").value = name;
+                    state.category = "__all__";
+                    refreshDetail();
+                }
+            });
+        }
+
+        // ---------- detail ----------
+        function disp(r) { return state.translate && HAS_EN && r.query_en ? r.query_en : r.query; }
+
+        function refreshDetail() {
+            const cy = ROWS.filter(r => r.location === state.country && r.year === state.year)
+                .sort((a, b) => a.rank - b.rank);
+
+            const cats = [...new Set(cy.map(r => r.category).filter(Boolean))].sort();
+            if (!cats.includes(state.category)) state.category = "__all__";
+            $("category").innerHTML =
+                `<option value="__all__">All categories</option>` +
+                cats.map(c => `<option value="${c.replace(/"/g, '&quot;')}">${c}</option>`).join("");
+            $("category").value = state.category;
+
+            const sel = state.category === "__all__" ? cy : cy.filter(r => r.category === state.category);
+
+            const catTxt = state.category === "__all__" ? "" : " · " + state.category;
+            let html = `<h2>${state.country} · ${state.year}${catTxt}</h2>`;
+            if (MINORITY.has(state.country))
+                html += `<div class="warn">⚠ Google is a minority search engine here — data reflects Google users only.</div>`;
+
+            if (!sel.length) {
+                const yrs = [...new Set(ROWS.filter(r => r.location === state.country).map(r => r.year))].sort();
+                html += `<div class="empty-state">No data for this selection. Years available for
+                         ${state.country}: ${yrs.join(", ") || "—"}.</div>`;
+                $("panel").innerHTML = html;
+                return;
+            }
+
+            html += `<div class="detail">
+                 <canvas id="cloud"></canvas>
+                 <div class="list"><h3>Top trending queries</h3>${
+                    sel.slice(0, 20).map(r => {
+                        const o = (state.translate && HAS_EN && r.query_en && r.query_en !== r.query)
+                            ? ` <span class="o">· ${r.query}</span>` : "";
+                        const c = state.category === "__all__" ? ` <span class="o">· ${r.category}</span>` : "";
+                        return `<div class="row"><span class="rk">${r.rank}</span>${disp(r)}${o}${c}</div>`;
+                    }).join("")
+                 }</div></div>`;
+            $("panel").innerHTML = html;
+            drawCloud(sel);
+        }
+
+        // ---------- word cloud ----------
+        function drawCloud(sel) {
+            const w = {};
+            sel.forEach(r => { const q = disp(r).trim(); if (q) w[q] = (w[q] || 0) + Math.max(1, 21 - r.rank); });
+            const list = Object.entries(w);
+            if (!list.length) return;
+            const max = Math.max(...list.map(d => d[1]));
+
+            const cv = $("cloud");
+            cv.width = cv.clientWidth;
+            cv.height = cv.clientHeight;
+            const scale = Math.min(cv.width, cv.height) / 9;
+
+            WordCloud(cv, {
+                list,
+                backgroundColor: "#0f1822",
+                color: () => {
+                    const t = ["#f0a830", "#e6edf3", "#c9962f", "#9fb4c6"];
+                    return t[Math.floor(Math.random() * t.length)];
+                },
+                weightFactor: x => Math.max(12, (x / max) * scale),
+                fontFamily: "Georgia, 'Noto Sans', sans-serif",
+                rotateRatio: 0.25,
+                rotationSteps: 2,
+                gridSize: 6,
+                drawOutOfBound: false
+            });
+        }
+
+        window.addEventListener("resize", () => { if (state.country) refreshDetail(); });
+    </script>
+
+    <!-- Bootstrap JS + dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
